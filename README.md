@@ -58,10 +58,10 @@ app.post('/auth/twitter/token',
 );
 ```
 
-#### Performing Twitter Reverse Auth Step 1 Server-side
+#### Performing Twitter Reverse Auth Step 1 Server-Side
 
 To remove the need to embed the consumer secret in your client application, you can setup a 
-route in route application to perform step 1 for you.
+route to perform step 1 on the server-side.
 
 For example, as route in an [Express](http://expressjs.com/)
 application using the [request](https://github.com/mikeal/request) module:

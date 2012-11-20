@@ -28,17 +28,18 @@ consumer secret, and callback URL within `options`.  The consumer key and secret
 are obtained by [creating an application](https://dev.twitter.com/apps) at
 Twitter's [developer](https://dev.twitter.com/) site.
 
-    passport.use(new TwitterTokenStrategy({
-        consumerKey: TWITTER_CONSUMER_KEY,
-        consumerSecret: TWITTER_CONSUMER_SECRET
-      },
-      function(token, tokenSecret, profile, done) {
-        User.findOrCreate({ twitterId: profile.id }, function (err, user) {
-          return done(err, user);
-        });
-      }
-    ));
-
+```javascript
+passport.use(new TwitterTokenStrategy({
+    consumerKey: TWITTER_CONSUMER_KEY,
+    consumerSecret: TWITTER_CONSUMER_SECRET
+  },
+  function(token, tokenSecret, profile, done) {
+    User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
+```
 #### Authenticate Requests
 
 Use `passport.authenticate()`, specifying the `'twitter-token'` strategy, to
@@ -47,9 +48,53 @@ authenticate requests.
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.post('/auth/twitter/token',
-      passport.authenticate('twitter-token'));
+```javascript
+app.post('/auth/twitter/token',
+  passport.authenticate('twitter-token'),
+  function (req, res) {
+    // do something with req.user
+    res.send(req.user? 200 : 401);
+  }
+);
+```
 
+#### Performing Twitter Reverse Auth Step 1 Server-side
+
+To remove the need to necessary embed the consumer secret in the app, (since its not 
+necessary to construct the initial x_auth_mode=reverse_auth request to /oauth/request_token) 
+you can setup a route in route application to perform step 1 for you.
+
+For example, as route in an [Express](http://expressjs.com/)
+application:
+
+```javascript
+var request = require('request');
+
+app.post('/auth/twitter/reverse', function(req, res) {
+  var self = this;
+  
+  request.post({
+      url: 'https://api.twitter.com/oauth/request_token'
+    , oauth: { 
+          consumer_key: app.set('twitter client key')
+        , consumer_secret: app.set('twitter client secret')
+      }
+    , form: { 
+          x_auth_mode: 'reverse_auth'
+      }
+  }, function (err, r, body) {
+    if (err) {
+      return res.send(500, { message: e.message });
+    }
+    
+    if (body.indexOf('OAuth') !== 0) {
+      return res.send(500, { message: 'Malformed response from Twitter' });
+    }
+    
+    res.send({ x_reverse_auth_parameters: body });
+  });
+};
+```
 ## Credits
 
   - [Nicholas Penree](http://github.com/drudge)

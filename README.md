@@ -60,12 +60,11 @@ app.post('/auth/twitter/token',
 
 #### Performing Twitter Reverse Auth Step 1 Server-side
 
-To remove the need to necessary embed the consumer secret in the app, (since its not 
-necessary to construct the initial x_auth_mode=reverse_auth request to /oauth/request_token) 
-you can setup a route in route application to perform step 1 for you.
+To remove the need to embed the consumer secret in your client application, you can setup a 
+route in route application to perform step 1 for you.
 
 For example, as route in an [Express](http://expressjs.com/)
-application:
+application using the [request](https://github.com/mikeal/request) module:
 
 ```javascript
 var request = require('request');
@@ -79,9 +78,7 @@ app.post('/auth/twitter/reverse', function(req, res) {
           consumer_key: app.set('twitter client key')
         , consumer_secret: app.set('twitter client secret')
       }
-    , form: { 
-          x_auth_mode: 'reverse_auth'
-      }
+    , form: { x_auth_mode: 'reverse_auth' }
   }, function (err, r, body) {
     if (err) {
       return res.send(500, { message: e.message });

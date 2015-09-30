@@ -1,5 +1,14 @@
 # passport-twitter-token
 
+[![Build Status](https://travis-ci.org/drudge/passport-twitter-token.svg)](https://travis-ci.org/drudge/passport-twitter-token)
+[![Coverage Status](https://coveralls.io/repos/drudge/passport-twitter-token/badge.svg?branch=master&service=github)](https://coveralls.io/github/drudge/passport-twitter-token?branch=master)
+![Downloads](https://img.shields.io/npm/dm/passport-twitter-token.svg)
+![Downloads](https://img.shields.io/npm/dt/passport-twitter-token.svg)
+![npm version](https://img.shields.io/npm/v/passport-twitter-token.svg)
+![dependencies](https://img.shields.io/david/drudge/passport-twitter-token.svg)
+![dev dependencies](https://img.shields.io/david/dev/drudge/passport-twitter-token.svg)
+![License](https://img.shields.io/npm/l/passport-twitter-token.svg)
+
 [Passport](http://passportjs.org/) strategy for authenticating with [Twitter](http://twitter.com/) tokens
 using the OAuth 1.0a API.
 

@@ -2,7 +2,11 @@
   "name": "passport-twitter-token",
   "version": "0.1.5",
   "description": "Twitter token authentication strategy for Passport.",
-  "author": { "name": "Nicholas Penree", "email": "nick@penree.com", "url": "http://penree.com" },
+  "author": {
+    "name": "Nicholas Penree",
+    "email": "nick@penree.com",
+    "url": "http://penree.com"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/drudge/passport-twitter-token.git"
@@ -12,13 +16,24 @@
   },
   "main": "./lib/passport-twitter-token",
   "dependencies": {
-    "pkginfo": "0.2.x",
-    "passport-oauth": "0.1.x"
+    "pkginfo": "0.2.3",
+    "passport-oauth": "0.1.15"
   },
-  "engines": { "node": ">= 0.4.0" },
-  "licenses": [ {
-    "type": "MIT",
-    "url": "http://www.opensource.org/licenses/MIT" 
-  } ],
-  "keywords": ["passport", "twitter", "auth", "authn", "authentication", "identity"]
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "keywords": [
+    "passport",
+    "twitter",
+    "auth",
+    "authn",
+    "authentication",
+    "identity"
+  ]
 }

@@ -38,5 +38,12 @@
   },
   "dependencies": {
     "passport-oauth": "1.0.0"
+  },
+  "devDependencies": {
+    "babel": "5.8.23",
+    "chai": "3.3.0",
+    "istanbul": "0.3.21",
+    "mocha": "2.3.3",
+    "sinon": "1.17.1"
   }
 }

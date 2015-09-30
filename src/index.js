@@ -45,7 +45,6 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
     super(options, verify);
 
     this.name = 'twitter-token';
-    this._skipExtendedUserProfile = (options.skipExtendedUserProfile === undefined) ? false : options.skipExtendedUserProfile;
   }
 
   /**
@@ -103,7 +102,7 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
    * @api protected
    */
   userProfile(token, tokenSecret, params, done) {
-    this._oauth.get('https://api.twitter.com/1.1/users/show.json?user_id=' + params.user_id, token, tokenSecret, (error, body, res) => {
+    this._oauth.get(`https://api.twitter.com/1.1/users/show.json?user_id=${params.user_id}`, token, tokenSecret, (error, body, res) => {
       if (error) return done(new InternalOAuthError('Failed to fetch user profile', error));
 
       try {
@@ -123,22 +122,5 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
         done(e);
       }
     });
-  }
-
-  /**
-   * Return extra Twitter-specific parameters to be included in the user
-   * authorization request.
-   *
-   * @param {Object} options
-   * @return {Object}
-   * @api protected
-   */
-  userAuthorizationParams(options) {
-    let params = {};
-
-    if (options.forceLogin) params['force_login'] = options.forceLogin;
-    if (options.screenName) params['screen_name'] = options.screenName;
-
-    return params;
   }
 }

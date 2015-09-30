@@ -34,17 +34,20 @@ import { OAuthStrategy, InternalOAuthError } from 'passport-oauth';
  */
 export default class TwitterTokenStrategy extends OAuthStrategy {
   constructor(_options, _verify) {
+    let options = _options || {};
     let verify = _verify;
-    let options = Object.assign({
-      requestTokenURL: 'https://api.twitter.com/oauth/request_token',
-      accessTokenURL: 'https://api.twitter.com/oauth/access_token',
-      userAuthorizationURL: 'https://api.twitter.com/oauth/authenticate',
-      sessionKey: 'oauth:twitter'
-    }, _options);
+
+    options.requestTokenURL = options.requestTokenURL || 'https://api.twitter.com/oauth/request_token';
+    options.accessTokenURL = options.accessTokenURL || 'https://api.twitter.com/oauth/access_token';
+    options.userAuthorizationURL = options.userAuthorizationURL || 'https://api.twitter.com/oauth/authenticate';
+    options.sessionKey = options.sessionKey || 'oauth:twitter';
 
     super(options, verify);
 
     this.name = 'twitter-token';
+    this._oauthTokenField = options.oauthTokenField || 'oauth_token';
+    this._oauthTokenSecretField = options.oauthTokenSecretField || 'oauth_token_secret';
+    this._userIdField = options.userIdField || 'user_id';
   }
 
   /**
@@ -57,14 +60,13 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
     // Following the link back to the application is interpreted as an authentication failure
     if (req.query && req.query.denied) return this.fail();
 
-    let token = (req.body && req.body['oauth_token']) || (req.query && req.query['oauth_token']);
-    let tokenSecret = (req.body && req.body['oauth_token_secret']) || (req.query && req.query['oauth_token_secret']);
-    let userId = (req.body && req.body['user_id']) || (req.query && req.query['user_id']);
-    let params = {user_id: userId};
+    let token = (req.body && req.body[this._oauthTokenField]) || (req.query && req.query[this._oauthTokenField]);
+    let tokenSecret = (req.body && req.body[this._oauthTokenSecretField]) || (req.query && req.query[this._oauthTokenSecretField]);
+    let userId = (req.body && req.body[this._userIdField]) || (req.query && req.query[this._userIdField]);
 
-    if (!token) return this.fail({message: `You should provide oauth_token and oauth_token_secret`});
+    if (!token) return this.fail({message: `You should provide ${this._oauthTokenField} and ${this._oauthTokenSecretField}`});
 
-    this._loadUserProfile(token, tokenSecret, params, (error, profile) => {
+    this._loadUserProfile(token, tokenSecret, {user_id: userId}, (error, profile) => {
       if (error) return this.error(error);
 
       const verified = (error, user, info) => {

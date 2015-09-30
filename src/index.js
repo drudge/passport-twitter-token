@@ -48,23 +48,6 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
     this._skipExtendedUserProfile = (options.skipExtendedUserProfile === undefined) ? false : options.skipExtendedUserProfile;
   }
 
-  static lookup(obj, field) {
-    if (!obj) return null;
-
-    let chain = field.split(']').join('').split('[');
-
-    for (let i = 0, len = chain.length; i < len; i++) {
-      let prop = obj[chain[i]];
-
-      if (typeof(prop) === 'undefined') return null;
-      if (typeof(prop) !== 'object') return prop;
-
-      obj = prop;
-    }
-
-    return null;
-  }
-
   /**
    * Authenticate request by delegating to Twitter using OAuth.
    *
@@ -72,24 +55,17 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
    * @api protected
    */
   authenticate(req, options) {
-    // When a user denies authorization on Twitter, they are presented with a link
-    // to return to the application in the following format (where xxx is the
-    // value of the request token):
-    //
-    //     http://www.example.com/auth/twitter/callback?denied=xxx
-    //
-    // Following the link back to the application is interpreted as an
-    // authentication failure.
+    // Following the link back to the application is interpreted as an authentication failure
     if (req.query && req.query.denied) return this.fail();
 
-    let token = lookup(req.body, 'oauth_token') || lookup(req.query, 'oauth_token');
-    let tokenSecret = lookup(req.body, 'oauth_token_secret') || lookup(req.query, 'oauth_token_secret');
-    let userId = lookup(req.body, 'user_id') || lookup(req.query, 'user_id');
+    let token = (req.body && req.body['oauth_token']) || (req.query && req.query['oauth_token']);
+    let tokenSecret = (req.body && req.body['oauth_token_secret']) || (req.query && req.query['oauth_token_secret']);
+    let userId = (req.body && req.body['user_id']) || (req.query && req.query['user_id']);
     let params = {user_id: userId};
 
-    if (!token) return this.fail({message: `You should provide oauth_token`});
+    if (!token) return this.fail({message: `You should provide oauth_token and oauth_token_secret`});
 
-    this._loadUserProfile(token, tokenSecret, params, function (error, profile) {
+    this._loadUserProfile(token, tokenSecret, params, (error, profile) => {
       if (error) return this.error(error);
 
       const verified = (error, user, info) => {
@@ -127,36 +103,26 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
    * @api protected
    */
   userProfile(token, tokenSecret, params, done) {
-    if (!this._skipExtendedUserProfile) {
-      this._oauth.get('https://api.twitter.com/1.1/users/show.json?user_id=' + params.user_id, token, tokenSecret, function (err, body, res) {
-        if (err) {
-          return done(new InternalOAuthError('failed to fetch user profile', err));
-        }
+    this._oauth.get('https://api.twitter.com/1.1/users/show.json?user_id=' + params.user_id, token, tokenSecret, (error, body, res) => {
+      if (error) return done(new InternalOAuthError('Failed to fetch user profile', error));
 
-        try {
-          let json = JSON.parse(body);
+      try {
+        let json = JSON.parse(body);
+        let profile = {
+          provider: 'twitter',
+          id: json.id,
+          username: json.screen_name,
+          displayName: json.name,
+          photos: [{value: json.profile_image_url_https}],
+          _raw: body,
+          _json: json
+        };
 
-          let profile = {provider: 'twitter'};
-          profile.id = json.id;
-          profile.username = json.screen_name;
-          profile.displayName = json.name;
-          profile.photos = [{value: json.profile_image_url_https}];
-
-          profile._raw = body;
-          profile._json = json;
-
-          done(null, profile);
-        } catch (e) {
-          done(e);
-        }
-      });
-    } else {
-      let profile = {provider: 'twitter'};
-      profile.id = params.user_id;
-      profile.username = params.screen_name;
-
-      done(null, profile);
-    }
+        done(null, profile);
+      } catch (e) {
+        done(e);
+      }
+    });
   }
 
   /**
@@ -169,12 +135,10 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
    */
   userAuthorizationParams(options) {
     let params = {};
-    if (options.forceLogin) {
-      params['force_login'] = options.forceLogin;
-    }
-    if (options.screenName) {
-      params['screen_name'] = options.screenName;
-    }
+
+    if (options.forceLogin) params['force_login'] = options.forceLogin;
+    if (options.screenName) params['screen_name'] = options.screenName;
+
     return params;
   }
 }

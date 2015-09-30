@@ -37,6 +37,6 @@
     "url": "http://github.com/drudge/passport-twitter-token/issues"
   },
   "dependencies": {
-    "passport-oauth": "0.1.15"
+    "passport-oauth": "1.0.0"
   }
 }

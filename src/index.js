@@ -114,6 +114,12 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
           id: json.id,
           username: json.screen_name,
           displayName: json.name,
+          name: {
+            familyName: '',
+            givenName: '',
+            middleName: ''
+          },
+          emails: [{value: ''}],
           photos: [{value: json.profile_image_url_https}],
           _raw: body,
           _json: json

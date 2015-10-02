@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- General improvements and typo fixes;
+
 ## 1.0.0
 
 - Migration from ES5 to ES6 syntax;

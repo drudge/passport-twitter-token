@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Clarify configuring step in readme;
+
 ## 1.0.1
 
 - General improvements and typo fixes;

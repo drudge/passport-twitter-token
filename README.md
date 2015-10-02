@@ -30,6 +30,8 @@ In order to identify your application to Twitter, specify the consumer key, cons
 The consumer key and secret are obtained by [creating an application](https://dev.twitter.com/apps) at Twitter's [developer](https://dev.twitter.com/) site.
 
 ```javascript
+var TwitterTokenStrategy = require('passport-twitter-token');
+
 passport.use(new TwitterTokenStrategy({
     consumerKey: TWITTER_CONSUMER_KEY,
     consumerSecret: TWITTER_CONSUMER_SECRET

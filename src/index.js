@@ -55,7 +55,7 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
 
     let token = (req.body && req.body[this._oauthTokenField]) || (req.query && req.query[this._oauthTokenField]);
     let tokenSecret = (req.body && req.body[this._oauthTokenSecretField]) || (req.query && req.query[this._oauthTokenSecretField]);
-    let userId = (req.body && req.body[this._userIdField]) || (req.query && req.query[this._userIdField]);
+    let userId = (req.body && req.body[this._userIdField]) || (req.query && req.query[this._userIdField]) || (token.substr(0, token.indexOf('-')));
 
     if (!token) return this.fail({message: `You should provide ${this._oauthTokenField} and ${this._oauthTokenSecretField}`});
 

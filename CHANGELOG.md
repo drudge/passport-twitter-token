@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+- Implements getting user_id from oauth_token;
+
 ## 1.0.2
 
 - Clarify configuring step in readme;

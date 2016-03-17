@@ -198,7 +198,7 @@ describe('TwitterTokenStrategy:userProfile', () => {
       if (error) return done(error);
 
       assert.equal(profile.provider, 'twitter');
-      assert.equal(profile.id, '1234');
+      assert.equal(profile.id, '710474596655480832');
       assert.equal(profile.username, 'ghaiklor');
       assert.equal(profile.displayName, 'Eugene Obrezkov');
       assert.deepEqual(profile.photos, [{value: 'IMAGE_URL'}]);

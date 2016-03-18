@@ -90,14 +90,9 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
 
       try {
         let json = JSON.parse(body);
-        let profileId = String(json.id);
-        if (json.id_str) {
-          profileId = json.id_str;
-        }
-
         let profile = {
           provider: 'twitter',
-          id: profileId,
+          id: json.id_str ? json.id_str : String(json.id),
           username: json.screen_name,
           displayName: json.name,
           name: {

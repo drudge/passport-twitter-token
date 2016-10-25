@@ -1,5 +1,5 @@
 import { OAuthStrategy, InternalOAuthError } from 'passport-oauth';
-
+import uri from 'url';
 /**
  * `TwitterTokenStrategy` constructor.
  *
@@ -43,6 +43,10 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
     this._oauthTokenField = options.oauthTokenField || 'oauth_token';
     this._oauthTokenSecretField = options.oauthTokenSecretField || 'oauth_token_secret';
     this._userIdField = options.userIdField || 'user_id';
+    this._includeEmail = (options.includeEmail !== undefined) ? options.includeEmail : false;
+    this._userProfileURL = options.userProfileURL || 'https://api.twitter.com/1.1/account/verify_credentials.json';
+    this._includeStatus = (options.includeStatus !== undefined) ? options.includeStatus : true;
+    this._includeEntities = (options.includeEntities !== undefined) ? options.includeEntities : true;    
   }
 
   /**
@@ -85,7 +89,23 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
    * @param {Function} done
    */
   userProfile(token, tokenSecret, params, done) {
-    this._oauth.get(`https://api.twitter.com/1.1/users/show.json?user_id=${params.user_id}`, token, tokenSecret, (error, body, res) => {
+    const url = uri.parse(this._userProfileURL);
+    
+    url.query = url.query || {};
+    if (url.pathname.indexOf('/users/show.json') == (url.pathname.length - '/users/show.json'.length)) {
+      url.query.user_id = params.user_id;
+    }
+    if (this._includeEmail == true) {
+      url.query.include_email = true;
+    }
+    if (this._includeStatus == false) {
+      url.query.skip_status = true;
+    }
+    if (this._includeEntities == false) {
+      url.query.include_entities = false;
+    }
+    
+    this._oauth.get(uri.format(url), token, tokenSecret, (error, body, res) => {
       if (error) return done(new InternalOAuthError('Failed to fetch user profile', error));
 
       try {
@@ -100,7 +120,7 @@ export default class TwitterTokenStrategy extends OAuthStrategy {
             givenName: '',
             middleName: ''
           },
-          emails: [{value: ''}],
+          emails: [{value: json.email}],
           photos: [{value: json.profile_image_url_https}],
           _raw: body,
           _json: json

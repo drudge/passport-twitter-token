@@ -1,6 +1,6 @@
 {
   "name": "passport-twitter-token",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Twitter token authentication strategy for Passport",
   "main": "lib/index.js",
   "scripts": {

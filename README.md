@@ -29,6 +29,12 @@ The `verify` callback must call `done` providing a user to complete authenticati
 In order to identify your application to Twitter, specify the consumer key, consumer secret, and callback URL within `options`.
 The consumer key and secret are obtained by [creating an application](https://dev.twitter.com/apps) at Twitter's [developer](https://dev.twitter.com/) site.
 
+Optional fields:
+ - `includeEmail` - Boolean 
+ - `includeStatus` - Boolean
+ - `includeEntities` - Boolean
+ - `userProfileURL` - Default `https://api.twitter.com/1.1/account/verify_credentials.json`
+ 
 ```javascript
 var TwitterTokenStrategy = require('passport-twitter-token');
 

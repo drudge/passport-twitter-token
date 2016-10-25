@@ -5,7 +5,10 @@ import fakeProfile from '../fixtures/profile';
 
 const STRATEGY_CONFIG = {
   consumerKey: '123',
-  consumerSecret: '123'
+  consumerSecret: '123',
+  options: {
+    includeEmail: true
+  }
 };
 
 const BLANK_FUNCTION = () => {
@@ -201,9 +204,11 @@ describe('TwitterTokenStrategy:userProfile', () => {
       assert.equal(profile.id, '710474596655480832');
       assert.equal(profile.username, 'ghaiklor');
       assert.equal(profile.displayName, 'Eugene Obrezkov');
+      assert.equal(profile.emails[0].value, 'ghaiklor@gmail.com');
       assert.deepEqual(profile.photos, [{value: 'IMAGE_URL'}]);
       assert.equal(typeof profile._raw, 'string');
       assert.equal(typeof profile._json, 'object');
+      assert.equal(typeof profile.emails, 'object')
 
       strategy._oauth.get.restore();
 

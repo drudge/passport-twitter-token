@@ -42,13 +42,13 @@ Optional fields:
  - `userProfileURL` - Default `https://api.twitter.com/1.1/account/verify_credentials.json`
  
 ```javascript
-var TwitterTokenStrategy = require('passport-twitter-token');
+const TwitterTokenStrategy = require('passport-twitter-token');
 
 passport.use(new TwitterTokenStrategy({
     consumerKey: TWITTER_CONSUMER_KEY,
     consumerSecret: TWITTER_CONSUMER_SECRET
-  }, function(token, tokenSecret, profile, done) {
-    User.findOrCreate({ twitterId: profile.id }, function (error, user) {
+  }, (token, tokenSecret, profile, done) => {
+    User.findOrCreate({ twitterId: profile.id }, (error, user) => {
       return done(error, user);
     });
   }
@@ -64,7 +64,7 @@ For example, as route middleware in an [Express](http://expressjs.com/) applicat
 ```javascript
 app.post('/auth/twitter/token',
   passport.authenticate('twitter-token'),
-  function (req, res) {
+  (req, res) => {
     // do something with req.user
     res.send(req.user ? 200 : 401);
   }
@@ -76,8 +76,8 @@ Or as action in Sails framework:
 ```javascript
 // api/controllers/AuthController.js
 module.exports = {
-  twitter: function(req, res) {
-    passport.authenticate('twitter-token', function(error, user, info) {
+  twitter: (req, res) => {
+    passport.authenticate('twitter-token', (error, user, info) => {
       // do your stuff with user
     })(req, res);
   }
@@ -97,11 +97,9 @@ To remove the need to embed the consumer secret in your client application, you 
 For example, as route in an [Express](http://expressjs.com/) application using the [request](https://github.com/mikeal/request) module:
 
 ```javascript
-var request = require('request');
+const request = require('request');
 
-app.post('/auth/twitter/reverse', function(req, res) {
-  var self = this;
-
+app.post('/auth/twitter/reverse', (req, res) => {
   request.post({
     url: 'https://api.twitter.com/oauth/request_token',
     oauth: {
@@ -109,7 +107,7 @@ app.post('/auth/twitter/reverse', function(req, res) {
       consumer_secret: app.set('twitter client secret')
     },
     form: { x_auth_mode: 'reverse_auth' }
-  }, function (err, r, body) {
+  }, (err, r, body) => {
     if (err) {
       return res.send(500, { message: e.message });
     }
